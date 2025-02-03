@@ -1,15 +1,20 @@
 import React, { useState } from 'react'
 import {useDispatch, useSelector} from 'react-redux'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { updateForm, resetForm } from '../redux/features/cart/cartSlice'
 import { useForm } from "react-hook-form";
+import { useAuth } from '../context/AuthContext';
+import { useCreateOrdersMutation } from '../redux/features/orders/ordersapi';
+import Swal from 'sweetalert2';
 export default function Checkout() {
     const cartItems= useSelector(state => state.cart.cartItems)
-    const currentUser = true;
+    const {currentUser} = useAuth()
     const totalPrice = cartItems.reduce((acc, item)=> acc+ item.newPrice* item.quantity, 0).toFixed(2)
     const { register, handleSubmit, watch, formState: { errors } } = useForm();
-    const onSubmit = (data) => {
-        console.log(data);
+    const  [createOrders, {isLoading, error}] = useCreateOrdersMutation()
+    const navigate = useNavigate();
+    const onSubmit = async(data) => {
+
         const newOrder = {
             name: data.name,
             email: currentUser?.email, 
@@ -23,9 +28,17 @@ export default function Checkout() {
             productsIds: cartItems.map(items => items?._id),
             totalPrice: totalPrice
         }
-        console.log(newOrder)
+        try{
+            await createOrders(newOrder).unwrap()
+            Swal.fire("Order Placed");
+            navigate("/orders")
+        }catch(err){
+            console.error("Error placing an order", err)
+        }
     }
     const [isChecked, setIsChecked] = useState(false)
+
+    if(isLoading)return <div>Loading...</div>
     return (
    <section>
     <div className="min-h-screen p-6 bg-gray-100 flex items-center justify-center">

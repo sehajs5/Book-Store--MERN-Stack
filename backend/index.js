@@ -8,13 +8,19 @@ const mongoose = require('mongoose');
 require('dotenv').config()
 
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
 app.use(cors({
     origin: 'http://localhost:5173',
     credentials: true,
 }))
-const bookRoutes = require('./src/books/book.route')
+const bookRoutes = require('./src/books/books/book.route')
+const orderRoutes = require('./src/books/orders/order.route')
+const userRoutes = require('./src/books/users/users.route')
+const adminRoutes = require('./src/books/stats/admin.route')
 app.use("/api/books", bookRoutes)
+app.use("/api/orders", orderRoutes)
+app.use("/api/auth", userRoutes)
+app.use("/api/admin", adminRoutes)
 async function main() {
     await mongoose.connect(process.env.DB_URL);
     app.use('/', (req, res)=> {

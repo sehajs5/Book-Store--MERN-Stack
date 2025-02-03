@@ -21,9 +21,11 @@ export default function TopSeller() {
     const [selectedCategory, setSelectedCategory] = useState('Choose a genre');
     const {data: books =[]} = useFetchAllBooksQuery()
     console.log(books)
-    const filteredBooks = selectedCategory==="Choose a genre"? books: books.filter(book => 
+    const bookList = books?.books || [];
+    const filteredBooks = selectedCategory==="Choose a genre"? bookList: bookList.filter(book => 
         book.category===selectedCategory.toLowerCase()
     )
+    console.log(filteredBooks)
   return (
     <div className='font-primary max-w-screen-2xl mx-auto py-16 items-center justify-between gap-12'>
         <h1 className='text-2xl font-semibold mb-6'>Top Sellers</h1>

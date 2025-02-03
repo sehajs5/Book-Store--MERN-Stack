@@ -1,7 +1,8 @@
 const express = require('express');
-const Book = require('./bookmodel');
+
 const router = express.Router();
-const {postABook, getAllBooks, getSingleBook, updateBook, deleteBook} = require('./book.controller')
+const {postABook, getAllBooks, getSingleBook, updateBook, deleteBook} = require('./book.controller');
+const verifyAdmin = require('../middleware/verifyAdmin');
 //post when we have to submit something to front end to db
 //get when we are getting something from database
 //put/patch - edit or update the data
@@ -9,11 +10,11 @@ const {postABook, getAllBooks, getSingleBook, updateBook, deleteBook} = require(
 
 //frontend => backend server => controller => bookSchema (valid) => database => sent to the db => frontend
 
-router.post("/create-book", postABook)
+router.post("/create-book", verifyAdmin,postABook)
 //get all books
 
 router.get("/", getAllBooks)
 router.get("/:id", getSingleBook)
-router.put("/edit/:id", updateBook)
-router.delete("/:id", deleteBook)
+router.put("/edit/:id",verifyAdmin, updateBook)
+router.delete("/:id",verifyAdmin, deleteBook)
 module.exports = router; 

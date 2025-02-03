@@ -3,16 +3,14 @@ import BooksCard from './Books/BooksCard';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination } from 'swiper/modules';
-
+import { useFetchAllBooksQuery } from '../redux/features/cart/books/booksapi';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 export default function () {
-    const [books, setBooks]= useState([])
-    useEffect(()=>{
-        fetch("books.json").then(res => res.json()).then((data) => setBooks(data))
-    })
+    const {data: bookList =[]} = useFetchAllBooksQuery()
+    const books = bookList?.books || [];
   return (
     <div className='font-primary max-w-screen-2xl mx-auto py-16 items-center justify-between gap-12'>
         <h1 className='text-2xl font-semibold mb-6'>Recommended for you</h1>
